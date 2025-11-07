@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"E:/VS Code Repos/hexdump/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

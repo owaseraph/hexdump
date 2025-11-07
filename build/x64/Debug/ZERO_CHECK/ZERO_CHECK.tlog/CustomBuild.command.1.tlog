@@ -1,0 +1,10 @@
+^E:\VS CODE REPOS\HEXDUMP\BUILD\CMAKEFILES\93726D35C364347A8B3C23CE44E387D8\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" "-SE:/VS Code Repos/hexdump" "-BE:/VS Code Repos/hexdump/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "E:/VS Code Repos/hexdump/build/hexdump.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
