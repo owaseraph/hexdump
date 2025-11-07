@@ -1,1 +1,3 @@
-this is a hexdump
+Hello, world!
+This is a test file.
+1234567890
