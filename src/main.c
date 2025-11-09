@@ -1,5 +1,45 @@
 #include "hexdump.h"
 
+//added color for printable characters
+
+static int g_color_enabled=0;
+
+static int stdout_is_tty(void){
+    return isatty(fileno(stdout));
+}
+
+
+static void enable_vt_on_windows(void){
+    HANDLE hout=GetStdHandle(STD_OUTPUT_HANDLE);
+    if(hout==INVALID_HANDLE_VALUE){
+        return;
+    }
+    DWORD mode =0;
+    if(!GetConsoleMode(hout,&mode)) return;
+
+    mode|=ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+
+    SetConsoleMode(hout,mode);
+}
+
+
+static void enable_color_if_possible(int requested) {
+    if (!requested) { 
+        g_color_enabled = 0; 
+        return; 
+    }
+    if (!stdout_is_tty()) { 
+        g_color_enabled = 0; 
+        return; 
+    }
+    #ifdef _WIN32
+        enable_vt_on_windows();
+    #endif
+    g_color_enabled = 1;
+}
+
+
+
 static void usage(const char* prog){
     fprintf(stderr,
     "usage: %s [-w 8|16|32] [-n bytes] [-o offset] [-A] <file>\n"

@@ -3,6 +3,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#ifdef _WIN32
+    #include <io.h>
+    #include <windows.h>
+    #define isatty _isatty
+    #define fileno _fileno
+#else
+    #include <unistd.h>
+#endif
+
+#define COL_PRINTABLE   "\x1b[32m"  /* green  */
+#define COL_NONPRINT    "\x1b[90m"  /* gray   */
+#define COL_RESET       "\x1b[0m"
+
 
 #define BYTES_PER_LINE 16
 
@@ -23,7 +36,10 @@ static void print_line(size_t offset, const unsigned char* buff, size_t n,size_t
     size_t half=width/2;
     for(size_t i=0;i<width;i++){
         if(i<n){
-            printf("%02X",(unsigned)buff[i]);
+            if (is_printable(buff[i])) fputs(COL_PRINTABLE, stdout);
+            else fputs(COL_NONPRINT, stdout);
+            printf("%02X", (unsigned)buff[i]);
+            fputs(COL_RESET, stdout);
         }
         else  printf(" ");
         if(i==half-1){
@@ -38,8 +54,15 @@ static void print_line(size_t offset, const unsigned char* buff, size_t n,size_t
         printf(" |");
         for(size_t i = 0; i < n && i < BYTES_PER_LINE; ++i){
             unsigned char c = buff[i];
-            putchar(is_printable(c) ? c : '.');
+            if(is_printable(c)){
+                fputs(COL_PRINTABLE, stdout);
+            }
+            else{
+                fputs(COL_NONPRINT, stdout);
+            }
+            putchar(is_printable(c) ? (char)c : '.');
         }
+        fputs(COL_RESET, stdout);
         printf("|\n");
     }
 }
