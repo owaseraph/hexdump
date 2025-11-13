@@ -10,6 +10,7 @@ static int stdout_is_tty(void){
 
 
 static void enable_vt_on_windows(void){
+    #ifdef _WIN32
     HANDLE hout=GetStdHandle(STD_OUTPUT_HANDLE);
     if(hout==INVALID_HANDLE_VALUE){
         return;
@@ -20,6 +21,7 @@ static void enable_vt_on_windows(void){
     mode|=ENABLE_VIRTUAL_TERMINAL_PROCESSING;
 
     SetConsoleMode(hout,mode);
+    #endif
 }
 
 
@@ -126,7 +128,7 @@ int main(int argc, char* argv[]){
     //allocate buffer for one line of input
     unsigned char* buf=(unsigned char*)malloc(width);
     if(!buf){
-        fprintf(stderr,"error: cannot allocate memory\n",start,strerror(errno));
+        fprintf(stderr,"error: cannot allocate memory\n");
         fclose(f);
         return 1;
     }
